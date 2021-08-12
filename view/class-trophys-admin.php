@@ -55,7 +55,7 @@ class Trophy_Admin {
 		add_filter( 'sportspress_after_player_template', [$this,'trophys_player_template']);
 		add_image_size( 'trophy_thumb', '140','140', true );
 
-		add_filter('single_template', array($this, '_trophys_page_attributes'));
+		add_filter('single_template', array($this, 'trophys_page_attributes'));
 	}
 
 	/**
@@ -138,7 +138,7 @@ class Trophy_Admin {
 		}
 	}
 
-	public function _trophys_page_attributes($template)
+	public function trophys_page_attributes($template)
     {
         if (is_single(  ) && get_post_type(  ) === 'trophys') {
 
@@ -156,7 +156,7 @@ class Trophy_Admin {
         return $template;
     }
 
-	function _trophys_tables(){
+	function trophys_tables(){
 		if(!get_option( 'trophy_table_created' )){
 			global $wpdb;
 			require_once(ABSPATH . 'wp-admin/includes/upgrade.php');
@@ -186,20 +186,20 @@ class Trophy_Admin {
 
 	function trophys_post_type(){
 		$labels = array(
-			'name'                  => _x( 'Trophy', 'Trophy', 'trophys' ),
-			'singular_name'         => _x( 'Trophy', 'Post type singular name', 'trophys' ),
-			'menu_name'             => _x( 'Trophy', 'Admin Menu text', 'trophys' ),
-			'name_admin_bar'        => _x( 'Trophy', 'Add New on Toolbar', 'trophys' ),
+			'name'                  => _x( 'Trophys', 'Trophys', 'trophys' ),
+			'singular_name'         => _x( 'Trophys', 'Post type singular name', 'trophys' ),
+			'menu_name'             => _x( 'Trophys', 'Admin Menu text', 'trophys' ),
+			'name_admin_bar'        => _x( 'Trophys', 'Add New on Toolbar', 'trophys' ),
 			'add_new'               => __( 'Add New', 'trophys' ),
-			'add_new_item'          => __( 'Add New Trophy', 'trophys' ),
-			'new_item'              => __( 'New Trophy', 'trophys' ),
-			'edit_item'             => __( 'Edit Trophy', 'trophys' ),
-			'view_item'             => __( 'View Trophy', 'trophys' ),
-			'all_items'             => __( 'All Trophy', 'trophys' ),
-			'search_items'          => __( 'Search Trophy', 'trophys' ),
-			'parent_item_colon'     => __( 'Parent Trophy:', 'trophys' ),
-			'not_found'             => __( 'No trophys found.', 'trophys' ),
-			'not_found_in_trash'    => __( 'No trophys found in Trash.', 'trophys' ),
+			'add_new_item'          => __( 'Add New Trophys', 'trophys' ),
+			'new_item'              => __( 'New Trophys', 'trophys' ),
+			'edit_item'             => __( 'Edit Trophys', 'trophys' ),
+			'view_item'             => __( 'View Trophys', 'trophys' ),
+			'all_items'             => __( 'All Trophys', 'trophys' ),
+			'search_items'          => __( 'Search Trophys', 'trophys' ),
+			'parent_item_colon'     => __( 'Parent Trophys:', 'trophys' ),
+			'not_found'             => __( 'No Trophys found.', 'trophys' ),
+			'not_found_in_trash'    => __( 'No Trophys found in Trash.', 'trophys' ),
 		);
 	 
 		$args = array(
@@ -227,6 +227,7 @@ class Trophy_Admin {
 		);
 	 
 		register_post_type( 'trophys', $args );
+
 		$this->add_trophy_caps();
 	}
 	
@@ -369,13 +370,13 @@ class Trophy_Admin {
 		}
 
 		echo '<div class="verifybox">';
-		echo '<label class="'.($verified == 1?'vactive':'').'" for="verified">Verified';
+		echo '<label class="'.($verified == 1?'vactive':'').'" for="verified2">Verified';
 		echo '<input '.($verified == 1?'checked':'').' value="1" type="radio" name="verified" id="verified2">';
 		echo '</label>';
-		echo '<label class="'.($verified == 2?'vactive':'').'" for="vpending">Pending';
+		echo '<label class="'.($verified == 2?'vactive':'').'" for="vpending2">Pending';
 		echo '<input '.($verified == 2?'checked':'').' value="2" type="radio" name="verified" id="vpending2">';
 		echo '</label>';
-		echo '<label class="'.($verified == 0?'vactive':'').'" for="unverified">Unverified';
+		echo '<label class="'.($verified == 0?'vactive':'').'" for="unverified2">Unverified';
 		echo '<input '.($verified == 0?'checked':'').' value="0" type="radio" name="verified" id="unverified2">';
 		echo '</label>';
 		echo '</div>';
@@ -395,7 +396,7 @@ class Trophy_Admin {
 		if($trophys){
 
 			?>
-
+			<input type="hidden" name="junus_module" value="1">
 			<table id="trophy_table2">
 				<thead>
 					<tr>
@@ -498,85 +499,88 @@ class Trophy_Admin {
 	function save_tabs_meta_data($post_id, $post){
 
 		global $wpdb;
-		
 		if(get_post_type(  ) == 'sp_team'){
-			$wpdb->query("DELETE FROM {$wpdb->prefix}trophys_tab_items WHERE team_id = $post_id");
+			if(isset($_POST['junus_module'])){
+				$wpdb->query("DELETE FROM {$wpdb->prefix}trophys_tab_items WHERE team_id = $post_id");
 			
-			if(is_array($_POST['trophys'])){
-				foreach($_POST['trophys'] as $trophyId){
-
-					if(!$wpdb->get_var("SELECT ID FROM {$wpdb->prefix}trophys_tab_items WHERE team_id = $post_id AND trophy_id = $trophyId")){
-						$wpdb->insert($wpdb->prefix.'trophys_tab_items',array(
-							'trophy_id' => $trophyId,
-							'team_id' => $post_id,
-						),array('%d','%d'));
+				if(is_array($_POST['trophys'])){
+					foreach($_POST['trophys'] as $trophyId){
+	
+						if(!$wpdb->get_var("SELECT ID FROM {$wpdb->prefix}trophys_tab_items WHERE team_id = $post_id AND trophy_id = $trophyId")){
+							$wpdb->insert($wpdb->prefix.'trophys_tab_items',array(
+								'trophy_id' => $trophyId,
+								'team_id' => $post_id,
+							),array('%d','%d'));
+						}
+	
 					}
-
 				}
 			}
 		}
 
 		if(get_post_type(  ) == 'sp_player'){
-			$wpdb->query("DELETE FROM {$wpdb->prefix}trophys_tab_items WHERE player_id = $post_id");
-			
-			if(is_array($_POST['trophys'])){
-				foreach($_POST['trophys'] as $trophyId){
+			if(isset($_POST['junus_module'])){
+				$wpdb->query("DELETE FROM {$wpdb->prefix}trophys_tab_items WHERE player_id = $post_id");
+				
+				if(is_array($_POST['trophys'])){
+					foreach($_POST['trophys'] as $trophyId){
+						
+						if(!$wpdb->get_var("SELECT ID FROM {$wpdb->prefix}trophys_tab_items WHERE player_id = $post_id AND trophy_id = $trophyId")){
+							$wpdb->insert($wpdb->prefix.'trophys_tab_items',array(
+								'trophy_id' => $trophyId,
+								'player_id' => $post_id,
+							),array('%d','%d'));
+						}
 
-					if(!$wpdb->get_var("SELECT ID FROM {$wpdb->prefix}trophys_tab_items WHERE player_id = $post_id AND trophy_id = $trophyId")){
-						$wpdb->insert($wpdb->prefix.'trophys_tab_items',array(
-							'trophy_id' => $trophyId,
-							'player_id' => $post_id,
+					}
+				}
+			}
+		}
+	}
+
+	function save_trophys_meta_data($post_id, $post){
+		if(isset($_POST['original_publish'])){
+			global $wpdb;
+			$wpdb->query("DELETE FROM {$wpdb->prefix}trophys_items WHERE trophy_id = $post_id");
+			
+			if(is_array($_POST['teams_posts_for'])){
+				foreach($_POST['teams_posts_for'] as $team){
+
+					if(!$wpdb->get_var("SELECT ID FROM {$wpdb->prefix}trophys_items WHERE team_id = $team AND trophy_id = $post_id")){
+						$wpdb->insert($wpdb->prefix.'trophys_items',array(
+							'trophy_id' => $post_id,
+							'team_id' => $team,
 						),array('%d','%d'));
 					}
 
 				}
 			}
-		}
-		
-	}
 
-	function save_trophys_meta_data($post_id, $post){
+			if(is_array($_POST['players_posts_for'])){
+				foreach($_POST['players_posts_for'] as $player){
 
-		global $wpdb;
-		$wpdb->query("DELETE FROM {$wpdb->prefix}trophys_items WHERE trophy_id = $post_id");
-		
-		if(is_array($_POST['teams_posts_for'])){
-			foreach($_POST['teams_posts_for'] as $team){
+					if(!$wpdb->get_var("SELECT ID FROM {$wpdb->prefix}trophys_items WHERE player_id = $player AND trophy_id = $post_id")){
+						$wpdb->insert($wpdb->prefix.'trophys_items',array(
+							'trophy_id' => $post_id,
+							'player_id' => $player,
+						),array('%d','%d'));
+					}
 
-				if(!$wpdb->get_var("SELECT ID FROM {$wpdb->prefix}trophys_items WHERE team_id = $team AND trophy_id = $post_id")){
-					$wpdb->insert($wpdb->prefix.'trophys_items',array(
-						'trophy_id' => $post_id,
-						'team_id' => $team,
-					),array('%d','%d'));
 				}
-
 			}
-		}
 
-		if(is_array($_POST['players_posts_for'])){
-			foreach($_POST['players_posts_for'] as $player){
-
-				if(!$wpdb->get_var("SELECT ID FROM {$wpdb->prefix}trophys_items WHERE player_id = $player AND trophy_id = $post_id")){
-					$wpdb->insert($wpdb->prefix.'trophys_items',array(
-						'trophy_id' => $post_id,
-						'player_id' => $player,
-					),array('%d','%d'));
-				}
-
+			if(isset($_POST['date_obtained'])){
+				update_post_meta( $post_id, 'date_obtained', $_POST['date_obtained'] );
 			}
-		}
 
-		if(isset($_POST['date_obtained'])){
-			update_post_meta( $post_id, 'date_obtained', $_POST['date_obtained'] );
-		}
-
-		if(isset($_POST['reference_meta'])){
-			$texts = sanitize_text_field( $_POST['reference_meta'] );
-			update_post_meta( $post_id, 'reference_meta', $texts );
-		}
-		
-		if(isset($_POST['verified'])){
-			update_post_meta( $post_id, 'verified', intval($_POST['verified']) );
+			if(isset($_POST['reference_meta'])){
+				$texts = sanitize_text_field( $_POST['reference_meta'] );
+				update_post_meta( $post_id, 'reference_meta', $texts );
+			}
+			
+			if(isset($_POST['verified'])){
+				update_post_meta( $post_id, 'verified', intval($_POST['verified']) );
+			}
 		}
 	}
 }

@@ -54,7 +54,7 @@ if ($trophys) {
                     <?php echo get_the_post_thumbnail( $trophy->ID, 'trophy_thumb', array( 'class' => 'trophy_thumb' ) ); ?>
                 </div>
                 <div class="pcontent">
-                    <h3 class="ptitle"><a target="_junu" href="<?php echo get_permalink( $trophy ); ?>?sp=<?php echo str_replace('sp_','',get_post_type(  )).'-'.$tab_id ?>"><?php echo $trophy->post_title; ?></a></h3>
+                    <h3 class="ptitle"><a target="_junu" href="<?php echo get_permalink( $trophy ); ?>"><?php echo $trophy->post_title; ?></a></h3>
                     
                     <div class="date_obtained">
                         <strong>Obtained date: </strong>

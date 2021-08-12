@@ -130,7 +130,7 @@ class Trophy {
 		$this->loader->add_action( 'wp_enqueue_scripts', $plugin_admin, 'public_enqueue_styles' );
 
 		$this->loader->add_action( 'init', $plugin_admin, 'trophys_post_type' );
-		$this->loader->add_action( 'init', $plugin_admin, '_trophys_tables' );
+		$this->loader->add_action( 'init', $plugin_admin, 'trophys_tables' );
 
 		$this->loader->add_action( 'add_meta_boxes', $plugin_admin, 'trophys_meta_boxes',99 );
 
